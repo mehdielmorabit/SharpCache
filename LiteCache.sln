@@ -3,9 +3,9 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.12.35707.178
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LiteCache", "DCache\LiteCache.csproj", "{0A931B6E-AB39-4161-ABA5-630CA05AB3BD}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LiteCache", "LiteCache\LiteCache.csproj", "{0A931B6E-AB39-4161-ABA5-630CA05AB3BD}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LiteCache.Tests", "DCache.Tests\LiteCache.Tests.csproj", "{A928D07C-05D1-480B-B7CE-B75C77F5C05F}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LiteCache.Tests", "LiteCache.Tests\LiteCache.Tests.csproj", "{A928D07C-05D1-480B-B7CE-B75C77F5C05F}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
