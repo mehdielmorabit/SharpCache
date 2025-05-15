@@ -1,6 +1,8 @@
-﻿namespace LiteCache.Abstractions
+﻿using SharpCache;
+
+namespace SharpCache
 {
-    public interface ILiteMemoryCache
+    public interface ISharpMemoryCache
     {
         public void Add(string key, object value, TimeSpan? slidingExpiration = null, DateTime? absoluteExpiration = null);
         public object? Get(string key);

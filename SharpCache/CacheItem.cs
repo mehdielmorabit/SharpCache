@@ -1,4 +1,4 @@
-﻿namespace LiteCache
+﻿namespace SharpCache
 {
     public class CacheItem
     {

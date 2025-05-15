@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace LiteCache.Persistence
+namespace SharpCache.Persistence
 {
     public interface IPersistenceProvider<T> : IDisposable, IAsyncDisposable where T : class
     {

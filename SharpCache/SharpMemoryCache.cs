@@ -1,9 +1,9 @@
-﻿using LiteCache.Abstractions;
+﻿using SharpCache;
 using System.Collections.Concurrent;
 
-namespace LiteCache
+namespace SharpCache
 {
-    public class LiteMemoryCache : ILiteMemoryCache
+    public class SharpMemoryCache : ISharpMemoryCache
     {
         private ConcurrentDictionary<string, CacheItem> Cache { get; init; } = new ConcurrentDictionary<string, CacheItem>();
 

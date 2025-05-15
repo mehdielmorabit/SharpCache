@@ -21,7 +21,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\LiteCache\LiteCache.csproj" />
+    <ProjectReference Include="..\SharpCache\SharpCache.csproj" />
   </ItemGroup>
 
   <ItemGroup>

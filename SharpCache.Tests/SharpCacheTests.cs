@@ -1,13 +1,13 @@
-﻿namespace LiteCache.Tests
+﻿namespace SharpCache.Tests
 {
-    public class LiteCacheTests
+    public class SharpCacheTests
     {
         [Fact]
         public void Test_Add()
         {
             // Arrange
             var cacheObject = new List<int> { 1, 2, 3 };
-            var cache = new LiteMemoryCache();
+            var cache = new SharpMemoryCache();
             var isEmptyInitially = cache.IsEmpty();
 
             // Act
@@ -23,7 +23,7 @@
         {
             // Arrange
             var cacheObject = new List<int> { 1, 2, 3 };
-            var cache = new LiteMemoryCache();
+            var cache = new SharpMemoryCache();
             cache.Add("testKey", cacheObject);
             // Act
             var result = cache.Get("testKey");
@@ -38,7 +38,7 @@
         {
             // Arrange
             var cacheObject = new List<int> { 1, 2, 3 };
-            var cache = new LiteMemoryCache();
+            var cache = new SharpMemoryCache();
             cache.Add("testKey", cacheObject);
 
             // Act
@@ -54,7 +54,7 @@
         {
             // Arrange
             var cacheObject = new List<int> { 1, 2, 3 };
-            var cache = new LiteMemoryCache();
+            var cache = new SharpMemoryCache();
             var absoluteExpiration = DateTime.UtcNow.AddSeconds(5);
             cache.Add("testKey", cacheObject, absoluteExpiration: absoluteExpiration);
             cache.TryGet("testKey", out var beforeCleanup);
@@ -76,7 +76,7 @@
         {
             // Arrange
             var cacheObject = new List<int> { 1, 2, 3 };
-            var cache = new LiteMemoryCache();
+            var cache = new SharpMemoryCache();
             cache.Add("testKey", cacheObject);
             // Act
             var result = cache.TryGet("testKey", out var value);
@@ -91,7 +91,7 @@
         {
             // Arrange
             var cacheObject = new List<int> { 1, 2, 3 };
-            var cache = new LiteMemoryCache();
+            var cache = new SharpMemoryCache();
             cache.Add("testKey", cacheObject);
             // Act
             var result = cache.TryRemove("testKey");
