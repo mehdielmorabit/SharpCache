@@ -26,6 +26,7 @@ namespace SharpCache.InMemoryCache
         public CacheItem Add(string key, object value, TimeSpan? slidingExpiration = null, DateTime? absoluteExpiration = null)
         {
             ArgumentNullException.ThrowIfNull(key);
+            ArgumentNullException.ThrowIfNull(value);
 
             var now = DateTime.UtcNow;
             var cacheItem = new CacheItem
