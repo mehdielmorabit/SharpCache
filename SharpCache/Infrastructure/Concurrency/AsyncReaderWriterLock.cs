@@ -1,12 +1,12 @@
 ﻿namespace SharpCache.Infrastructure.Concurrency
 {
-    /// <summary>
-    /// A simple implementation of a reader-writer lock that supports both synchronous and asynchronous operations
-    /// </summary>
+    /// <summary>  
+    /// A simple implementation of a reader-writer lock that supports both synchronous and asynchronous operations  
+    /// </summary>  
     public class AsyncReaderWriterLock : IDisposable
     {
-        private readonly SemaphoreSlim _readSemaphore = new SemaphoreSlim(1, 1);
-        private readonly SemaphoreSlim _writeSemaphore = new SemaphoreSlim(1, 1);
+        private readonly SemaphoreSlim _readSemaphore = new(1, 1);
+        private readonly SemaphoreSlim _writeSemaphore = new(1, 1);
         private int _readersCount = 0;
 
         public IDisposable ReadLock()
@@ -93,6 +93,7 @@
         {
             _readSemaphore.Dispose();
             _writeSemaphore.Dispose();
+            GC.SuppressFinalize(this);
         }
 
         private class DisposableAction : IDisposable

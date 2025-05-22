@@ -1,4 +1,6 @@
-﻿namespace SharpCache.Tests
+﻿using SharpCache.InMemoryCache;
+
+namespace SharpCache.Tests
 {
     public class SharpCacheTests
     {

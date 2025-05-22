@@ -7,7 +7,7 @@ namespace SharpCache.Infrastructure.Keys
     {
         private readonly StringBuilder _builder = new();
         private bool _useHashing = false;
-        private string? _salt = Environment.GetEnvironmentVariable("SHARPCACHE_CACHE_KEY_SALT");
+        private readonly string? _salt = Environment.GetEnvironmentVariable("SHARPCACHE_CACHE_KEY_SALT");
         private static bool _saltWarningShown = false;
 
         public static CacheKeyBuilder Create() => new();
@@ -41,7 +41,7 @@ namespace SharpCache.Infrastructure.Keys
         {
             if (value != null)
             {
-                _builder.Append(":").Append(value.ToString());
+                _builder.Append(':').Append(value.ToString());
             }
             return this;
         }
@@ -63,9 +63,8 @@ namespace SharpCache.Infrastructure.Keys
 
         private static string ComputeSHA256(string input)
         {
-            using var sha256 = SHA256.Create();
             var bytes = Encoding.UTF8.GetBytes(input);
-            var hash = sha256.ComputeHash(bytes);
+            var hash = SHA256.HashData(bytes);
             return Convert.ToHexString(hash);
         }
 
@@ -81,4 +80,3 @@ namespace SharpCache.Infrastructure.Keys
         }
     }
 }
-

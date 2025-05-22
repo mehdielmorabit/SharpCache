@@ -1,9 +1,4 @@
 ﻿using SharpCache.Infrastructure.Concurrency;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace SharpCache.Persistence
 {
@@ -15,7 +10,7 @@ namespace SharpCache.Persistence
     public class ThreadSafePersistenceProviderDecorator : IPersistenceProvider
     {
         private readonly IPersistenceProvider _innerProvider;
-        private readonly AsyncReaderWriterLock _lock = new AsyncReaderWriterLock();
+        private readonly AsyncReaderWriterLock _lock = new();
         private bool _disposed = false;
 
         public ThreadSafePersistenceProviderDecorator(IPersistenceProvider innerProvider)
@@ -152,10 +147,7 @@ namespace SharpCache.Persistence
 
         private void ThrowIfDisposed()
         {
-            if (_disposed)
-            {
-                throw new ObjectDisposedException(nameof(ThreadSafePersistenceProviderDecorator));
-            }
+            ObjectDisposedException.ThrowIf(_disposed, nameof(ThreadSafePersistenceProviderDecorator));
         }
     }
 }
