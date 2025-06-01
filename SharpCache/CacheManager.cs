@@ -67,6 +67,31 @@ namespace SharpCache
             }
         }
 
+        public T? Get<T>(string key)
+        {
+            var keySemaphore = GetKeySemaphore(key);
+            keySemaphore.Wait();
+            try
+            {
+                var value = _memoryCache.Get(key);
+                if (value is not null)
+                    return (T)value;
+
+                var item = _persistence.Load(key);
+                if (item is not null && !item.IsExpired)
+                {
+                    _memoryCache.Add(key, item.Value, item.SlidingExpiration, item.AbsoluteExpiration);
+                    return (T)item.Value;
+                }
+
+                return default;
+            }
+            finally
+            {
+                keySemaphore.Release();
+            }
+        }
+
         public bool TryGet(string key, out object? value)
         {
             var keySemaphore = GetKeySemaphore(key);
@@ -84,6 +109,34 @@ namespace SharpCache
                 }
 
                 value = null;
+                return false;
+            }
+            finally
+            {
+                keySemaphore.Release();
+            }
+        }
+
+        public bool TryGet<T>(string key, out T? value)
+        {
+            var keySemaphore = GetKeySemaphore(key);
+            keySemaphore.Wait();
+            try
+            {
+                if (_memoryCache.TryGet(key, out var cached) && cached is T cachedValue)
+                {
+                    value = cachedValue;
+                    return true;
+                }
+
+                if (_persistence.TryLoad(key, out var item) && item is not null && !item.IsExpired && item.Value is T loadedValue)
+                {
+                    value = loadedValue;
+                    _memoryCache.Add(key, loadedValue, item.SlidingExpiration, item.AbsoluteExpiration);
+                    return true;
+                }
+
+                value = default;
                 return false;
             }
             finally
@@ -196,6 +249,8 @@ namespace SharpCache
 
         public async Task<CacheItem> AddAsync(string key, object value, TimeSpan? slidingExpiration = null, DateTime? absoluteExpiration = null)
         {
+            ArgumentNullException.ThrowIfNull(value, nameof(value));
+
             var keySemaphore = GetKeySemaphore(key);
             await keySemaphore.WaitAsync();
             try
@@ -235,6 +290,31 @@ namespace SharpCache
             }
         }
 
+        public async Task<T?> GetAsync<T>(string key)
+        {
+            var keySemaphore = GetKeySemaphore(key);
+            await keySemaphore.WaitAsync();
+            try
+            {
+                var value = await _memoryCache.GetAsync(key);
+                if (value is T cachedTyped)
+                    return cachedTyped;
+
+                var item = await _persistence.LoadAsync(key);
+                if (item is not null && !item.IsExpired)
+                {
+                    await _memoryCache.AddAsync(key, item.Value, item.SlidingExpiration, item.AbsoluteExpiration);
+                    return (T)item.Value ;
+                }
+
+                return default;
+            }
+            finally
+            {
+                keySemaphore.Release();
+            }
+        }
+
         public async Task<(bool Success, object? Value)> TryGetAsync(string key)
         {
             var keySemaphore = GetKeySemaphore(key);
@@ -260,6 +340,32 @@ namespace SharpCache
             }
         }
 
+        public async Task<(bool Success, T? Value)> TryGetAsync<T>(string key)
+        {
+            var keySemaphore = GetKeySemaphore(key);
+            await keySemaphore.WaitAsync();
+            try
+            {
+                var (success, cachedValue) = await _memoryCache.TryGetAsync(key);
+                if (success && cachedValue is T cachedTyped)
+                {
+                    return (true, cachedTyped);
+                }
+
+                var result = await _persistence.TryLoadAsync(key);
+                if (result.Success && result.Item is not null && !result.Item.IsExpired && result.Item.Value is T loadedTyped)
+                {
+                    await _memoryCache.AddAsync(key, loadedTyped, result.Item.SlidingExpiration, result.Item.AbsoluteExpiration);
+                    return (true, loadedTyped);
+                }
+
+                return (false, default);
+            }
+            finally
+            {
+                keySemaphore.Release();
+            }
+        }
         public async Task RemoveAsync(string key)
         {
             var keySemaphore = GetKeySemaphore(key);
