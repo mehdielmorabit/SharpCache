@@ -16,7 +16,7 @@ namespace SharpCache.DI
 
             if (options.IsInMemoryEnabled)
             {
-                services.AddSingleton<SharpMemoryCache>();
+                services.AddSingleton<ISharpCache, SharpMemoryCache>();
             }
             else
             {
