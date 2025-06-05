@@ -1,4 +1,5 @@
-﻿using SharpCache.Persistence;
+﻿using SharpCache.Infrastructure.Keys;
+using SharpCache.Persistence;
 using System.Collections.Concurrent;
 
 namespace SharpCache
@@ -40,6 +41,12 @@ namespace SharpCache
             {
                 keySemaphore.Release();
             }
+        }
+
+        public CacheItem Add<T>(T item, TimeSpan? slidingExpiration = null, DateTime? absoluteExpiration = null)
+        {
+            var key = CacheKey.From(item);
+            return  Add(key, item!, slidingExpiration, absoluteExpiration);
         }
 
         public object? Get(string key)
@@ -264,6 +271,11 @@ namespace SharpCache
                 keySemaphore.Release();
             }
         }
+        public async Task<CacheItem> AddAsync<T>(T item, TimeSpan? slidingExpiration = null, DateTime? absoluteExpiration = null)
+        {
+            var key = CacheKey.From(item);
+            return await AddAsync(key, item!, slidingExpiration, absoluteExpiration);
+        }
 
         public async Task<object?> GetAsync(string key)
         {
@@ -466,6 +478,31 @@ namespace SharpCache
             }
         }
 
+        public T? GetBySegments<T>(params object[] segments)
+        {
+            var key = CacheKey.FromSegments<T>(segments);
+            return Get<T>(key);
+        }
+
+        public bool TryGetBySegments<T>(out T? value, params object[] segments)
+        {
+            var key = CacheKey.FromSegments<T>(segments);
+            return TryGet(key, out value);
+        }
+
+        public async Task<T?> GetBySegmentsAsync<T>(params object[] segments)
+        {
+            var key = CacheKey.FromSegments<T>(segments);
+            return await GetAsync<T>(key);
+        }
+
+        public async Task<(bool Success, T? Value)> TryGetBySegmentsAsync<T>(params object[] segments)
+        {
+            var key = CacheKey.FromSegments<T>(segments);
+            return await TryGetAsync<T>(key);
+        }
+
+
         public void Dispose()
         {
             Dispose(true);
@@ -500,7 +537,6 @@ namespace SharpCache
                 _semaphore.Dispose();
             }
 
-            var disposeTasks = new List<ValueTask>();
             foreach (var kvp in _keySemaphores)
             {
                 await kvp.Value.WaitAsync();
